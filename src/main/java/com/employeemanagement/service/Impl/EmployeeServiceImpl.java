@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.employeemanagement.dto.EmployeeDto;
 import com.employeemanagement.entity.Employee;
+import com.employeemanagement.enums.ResponseCode;
+import com.employeemanagement.exception.RestServiceException;
 import com.employeemanagement.mapper.EmployeeMapper;
 import com.employeemanagement.repository.EmployeeRepository;
 import com.employeemanagement.service.EmployeeService;
@@ -45,15 +47,15 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public ResponseEntity<EmployeeDto> getEmployeeById(Long id) {
+    public EmployeeDto getEmployeeById(Long id) {
         @SuppressWarnings("null")
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         if (employeeOptional.isPresent()) {
             Employee employee = employeeOptional.get();
             EmployeeDto emp = EmployeeMapper.mapToEmployeeDto(employee);
-            return new ResponseEntity<>(emp, HttpStatus.OK);
+            return emp;
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new RestServiceException(ResponseCode.EMP_NOT_FOUND);
         }
     }
 
